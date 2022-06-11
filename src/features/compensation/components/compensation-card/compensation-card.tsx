@@ -15,6 +15,119 @@ const CompensationCard = () => {
   const [insuranceCompDays, setIsuranceCompDays] = useState(0);
   const [isTB, setIsTB] = useState(false);
 
+  // Maximum number of days insurance compensates
+  const maxTBSickLeaveDays = 240;
+  // Maximum number of days employer compensates
+  const maxSickLeaveDays = 182;
+  // Allowed minimum number of sick leave days
+  const minSickLeaveDays = 4;
+  // Number of days range employer compensates
+  const sickLeaveDaysRangeEmployer = 8;
+  // Compensation rate
+  const compRate = 0.7;
+  // number of days in a month for compensation
+  const daysInMonth = 28;
+
+  useEffect(() => {
+    setTotalCompensation(employerComp + insuranceComp);
+  }, [employerComp, insuranceComp]);
+
+  const handleHaveTB = (e: CheckboxChangeEvent) => {
+    setIsTB(e.target.checked);
+  };
+
+  const handleAverageIncome = (event: any) => {
+    setIncome(event.target.value);
+  };
+  const getSickLeave = (event: any) => {
+    if (
+      (event.target.value > 0 && event.target.value <= 365) ||
+      event.target.value === ''
+    ) {
+      setSickDays(event.target.value);
+    } else {
+      notification.error({
+        message: `Invalid sick day !!! Please input between ${minSickLeaveDays} - 365`,
+      });
+    }
+  };
+
+  const handleCalculateComp = () => {
+    if (sickDays > 3 && sickDays <= 365) {
+      if (
+        sickDays > sickLeaveDaysRangeEmployer &&
+        sickDays <= maxSickLeaveDays
+      ) {
+        // insurance and employer compensation
+        const insuranceComp =
+          compRate *
+          (income / daysInMonth) *
+          (sickDays - sickLeaveDaysRangeEmployer);
+        const employerComp =
+          compRate * (income / daysInMonth) * sickLeaveDaysRangeEmployer;
+        setInsuranceComp(Math.floor(insuranceComp));
+        setEmployerComp(Math.floor(employerComp));
+
+        setIsuranceCompDays(sickDays - sickLeaveDaysRangeEmployer);
+        setEmployerCompDays(minSickLeaveDays);
+      } else if (
+        sickDays >= minSickLeaveDays &&
+        sickDays <= sickLeaveDaysRangeEmployer
+      ) {
+        // Employer compensation
+        const comp =
+          compRate * (income / daysInMonth) * (sickDays - minSickLeaveDays);
+
+        setEmployerComp(Math.floor(comp));
+        setInsuranceComp(0);
+        // Subtract days employer doesn't compensate
+        setEmployerCompDays(sickDays - 3);
+        setIsuranceCompDays(0);
+      } else if (
+        isTB &&
+        sickDays > sickLeaveDaysRangeEmployer &&
+        sickDays <= maxTBSickLeaveDays
+      ) {
+        // Insurance compensation with TB
+        const insuranceComp =
+          compRate *
+          (income / daysInMonth) *
+          (sickDays - sickLeaveDaysRangeEmployer);
+        const employerComp =
+          compRate * (income / daysInMonth) * sickLeaveDaysRangeEmployer;
+        setInsuranceComp(Math.floor(insuranceComp));
+        setEmployerComp(Math.floor(employerComp));
+
+        setIsuranceCompDays(sickDays - sickLeaveDaysRangeEmployer);
+        setEmployerCompDays(minSickLeaveDays);
+      } else {
+        if (isTB && sickDays > sickLeaveDaysRangeEmployer) {
+          notification.error({
+            message: `Maximum allowed sick leave is ${maxTBSickLeaveDays}`,
+          });
+        } else if (sickDays > sickLeaveDaysRangeEmployer) {
+          notification.error({
+            message: `Maximum allowed sick leave is ${maxSickLeaveDays}`,
+          });
+        }
+        setEmployerComp(0);
+        setEmployerCompDays(0);
+        setInsuranceComp(0);
+        setIsuranceCompDays(0);
+      }
+    } else {
+      if (sickDays < minSickLeaveDays) {
+        notification.error({
+          message: `Minimum allowed sick leave is ${minSickLeaveDays}`,
+        });
+      }
+      setSickDays(0);
+      setEmployerComp(0);
+      setEmployerCompDays(0);
+      setInsuranceComp(0);
+      setIsuranceCompDays(0);
+    }
+  };
   return (
     <div className="bg-white rounded-3xl card">
       <div className="flex justify-center">
@@ -25,14 +138,22 @@ const CompensationCard = () => {
             title="Average income"
             className="font-bold text-2xl h-11 input-gradient -mt-4"
             suffix={'€'}
+            onChange={(e) => {
+              handleAverageIncome(e);
+            }}
+            onPressEnter={handleAverageIncome}
           ></Input>
           <p className="mt-2">Days on sick-leave</p>
           <Input
             title="Days on sick-leave"
             className="font-bold text-2xl h-11 input-gradient -mt-4"
             suffix={'days'}
+            onChange={(e) => {
+              getSickLeave(e);
+            }}
+            onPressEnter={getSickLeave}
           ></Input>
-          <Checkbox>I have tubercolosis</Checkbox>
+          <Checkbox onChange={handleHaveTB}>I have tubercolosis</Checkbox>
           <div>
             <Button
               style={{
@@ -42,6 +163,7 @@ const CompensationCard = () => {
               className="w-40 mt-2"
               shape="round"
               size="large"
+              onClick={handleCalculateComp}
             >
               <p className="text-1xl text-center mt-2 font-bold text-white">
                 Calculate
