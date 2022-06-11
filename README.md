@@ -1,6 +1,4 @@
-## React Ant Design TailwindCSS boilerplate
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Estonain Employee Health Compenation Calculator
 
 ## Available Scripts
 
@@ -47,4 +45,4 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ### `npm run storybook`
 
-The command runs the Storybook app and opens a browser tab (http://localhost:6006). 
+The command runs the Storybook app and opens a browser tab (http://localhost:6006).
