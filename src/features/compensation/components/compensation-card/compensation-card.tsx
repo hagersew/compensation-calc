@@ -68,7 +68,7 @@ const CompensationCard = () => {
           (income / daysInMonth) *
           (sickDays - sickLeaveDaysRangeEmployer);
         const employerComp =
-          compRate * (income / daysInMonth) * sickLeaveDaysRangeEmployer;
+          compRate * (income / daysInMonth) * (sickDays - minSickLeaveDays);
         setInsuranceComp(Math.floor(insuranceComp));
         setEmployerComp(Math.floor(employerComp));
 
@@ -98,7 +98,7 @@ const CompensationCard = () => {
           (income / daysInMonth) *
           (sickDays - sickLeaveDaysRangeEmployer);
         const employerComp =
-          compRate * (income / daysInMonth) * sickLeaveDaysRangeEmployer;
+          compRate * (income / daysInMonth) * (sickDays - minSickLeaveDays);
         setInsuranceComp(Math.floor(insuranceComp));
         setEmployerComp(Math.floor(employerComp));
 
