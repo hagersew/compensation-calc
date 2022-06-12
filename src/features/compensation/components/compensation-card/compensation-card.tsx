@@ -144,6 +144,7 @@ const CompensationCard = () => {
               handleAverageIncome(e);
             }}
             onPressEnter={handleAverageIncome}
+            data-testid="handleAverageIncome"
           ></Input>
           <p className="mt-2">Days on sick-leave</p>
           <Input
@@ -154,8 +155,11 @@ const CompensationCard = () => {
               getSickLeave(e);
             }}
             onPressEnter={getSickLeave}
+            data-testid="getSickLeave"
           ></Input>
-          <Checkbox onChange={handleHaveTB}>I have tubercolosis</Checkbox>
+          <Checkbox data-testid="handleHaveTB" onChange={handleHaveTB}>
+            I have tubercolosis
+          </Checkbox>
           <div>
             <Button
               style={{
@@ -165,6 +169,7 @@ const CompensationCard = () => {
               className="w-40 mt-2"
               shape="round"
               size="large"
+              data-testid="calcButton"
               onClick={handleCalculateComp}
             >
               <p className="text-1xl text-center mt-2 font-bold text-white">
@@ -179,8 +184,12 @@ const CompensationCard = () => {
         <div className="w-full">
           <div className="text-center">
             <p>The employer compensates</p>
-            <p className="font-bold -mt-4">{employerCompDays} days</p>
-            <p className="font-bold text-lg">{employerComp}&euro;</p>
+            <p className="font-bold -mt-4" data-testid="employerCompDays">
+              {employerCompDays} days
+            </p>
+            <p className="font-bold text-lg" data-testid="employerComp">
+              {employerComp}&euro;
+            </p>
           </div>
           <div className="text-gray-400 text-xs text-center -mt-4">
             <p>Daily allowance</p>
@@ -190,8 +199,12 @@ const CompensationCard = () => {
         <div className="w-full">
           <div className="text-center">
             <p>Health Insurance compensates</p>
-            <p className="font-bold -mt-4">{insuranceCompDays} days</p>
-            <p className="font-bold text-lg">{insuranceComp}&euro;</p>
+            <p className="font-bold -mt-4" data-testid="insuranceCompDays">
+              {insuranceCompDays} days
+            </p>
+            <p className="font-bold text-lg" data-testid="insuranceComp">
+              {insuranceComp}&euro;
+            </p>
           </div>
           <div className="text-center text-gray-400 text-xs -mt-4">
             <p>Daily allowance</p>
@@ -202,8 +215,12 @@ const CompensationCard = () => {
       <Divider />
       <div className="w-full">
         <div className="text-center">
-          <p>Compensation total for {sickDays} days (net)</p>
-          <p className="font-bold text-2xl">{totalCompensation}&euro;</p>
+          <p data-testid="sickDays">
+            Compensation total for {sickDays} days (net)
+          </p>
+          <p data-testid="totalCompensation" className="font-bold text-2xl">
+            {totalCompensation}&euro;
+          </p>
         </div>
       </div>
     </div>
