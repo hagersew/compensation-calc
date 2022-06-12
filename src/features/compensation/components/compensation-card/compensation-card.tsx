@@ -37,7 +37,13 @@ const CompensationCard = () => {
   };
 
   const handleAverageIncome = (event: any) => {
-    setIncome(event.target.value);
+    if (event.target.value > 0 || event.target.value === '') {
+      setIncome(event.target.value);
+    } else {
+      notification.error({
+        message: `Invalid Income. Please input 1 and above`,
+      });
+    }
   };
   const getSickLeave = (event: any) => {
     if (
