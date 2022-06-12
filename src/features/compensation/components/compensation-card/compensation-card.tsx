@@ -1,9 +1,7 @@
-import Checkbox from 'antd/lib/checkbox/Checkbox';
-import Input from 'antd/lib/input/Input';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import React, { useEffect, useState } from 'react';
 import './styles/card.css';
-import { Button, Divider, notification } from 'antd';
+import { Button, Divider, notification, Checkbox, Input } from 'antd';
 
 const CompensationCard = () => {
   const [sickDays, setSickDays] = useState(0);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ListItem from './components/list-item/list-item';
-import { CompensationCard } from './components/compensation-card/index';
+import { CompensationCard } from './components/index';
 import './../../styles/style.css';
 import image from '../../assets/Image.png';
 

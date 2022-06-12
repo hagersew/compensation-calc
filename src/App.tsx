@@ -1,4 +1,4 @@
-import Compensation from './features/compensation';
+import Compensation from './features/compensation/compenstation-page';
 
 function App() {
   return <Compensation />;
