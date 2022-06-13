@@ -131,7 +131,7 @@ const CompensationCard = () => {
     }
   };
   return (
-    <div className="bg-white rounded-3xl card">
+    <div className=" card">
       <div className="flex justify-center">
         <div className="flex flex-col text-black w-11/12 mt-14 gap-1">
           <h1 className="font-bold text-2xl w-40">Compensation Calculator</h1>

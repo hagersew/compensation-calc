@@ -1,6 +1,7 @@
 .card {
    width: 320px;
    height: 755px;
+   background-image: url("./../../../../../assets/cardbg.png");
 }
 
 .input-gradient {
