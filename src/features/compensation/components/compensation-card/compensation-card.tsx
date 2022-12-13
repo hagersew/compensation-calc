@@ -168,7 +168,7 @@ const CompensationCard = () => {
       setInsuranceComp(0);
       setInsuranceCompDays(0);
     } catch (error: any) {
-      notification.error({ message: `Something went wrong ${error}` });
+      notification.error({ message: error });
     }
   };
   return (
