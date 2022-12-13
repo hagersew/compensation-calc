@@ -3,6 +3,19 @@ import React, { useEffect, useState } from 'react';
 import './styles/card.css';
 import { Button, Divider, notification, Checkbox, Input } from 'antd';
 
+// Maximum number of days insurance compensates
+const MAX_TB_SICK_LEAVE_DAYS = 240;
+// Maximum number of days employer compensates
+const MAX_SICK_LEAVE_DAYS = 182;
+// Allowed minimum number of sick leave days
+const MIN_SICK_LEAVE_DAYS = 4;
+// Number of days range employer compensates
+const SICK_LEAVE_DAYS_RANGE_EMPLOYER = 8;
+// Compensation rate
+const COMP_RATE = 0.7;
+// number of days in a month for compensation
+const DAYS_IN_MONTH = 28;
+
 const CompensationCard = () => {
   const [sickDays, setSickDays] = useState(0);
   const [income, setIncome] = useState(0);
@@ -10,21 +23,8 @@ const CompensationCard = () => {
   const [employerComp, setEmployerComp] = useState(0);
   const [insuranceComp, setInsuranceComp] = useState(0);
   const [employerCompDays, setEmployerCompDays] = useState(0);
-  const [insuranceCompDays, setIsuranceCompDays] = useState(0);
+  const [insuranceCompDays, setInsuranceCompDays] = useState(0);
   const [isTB, setIsTB] = useState(false);
-
-  // Maximum number of days insurance compensates
-  const maxTBSickLeaveDays = 240;
-  // Maximum number of days employer compensates
-  const maxSickLeaveDays = 182;
-  // Allowed minimum number of sick leave days
-  const minSickLeaveDays = 4;
-  // Number of days range employer compensates
-  const sickLeaveDaysRangeEmployer = 8;
-  // Compensation rate
-  const compRate = 0.7;
-  // number of days in a month for compensation
-  const daysInMonth = 28;
 
   useEffect(() => {
     setTotalCompensation(employerComp + insuranceComp);
@@ -51,87 +51,128 @@ const CompensationCard = () => {
       setSickDays(event.target.value);
     } else {
       notification.error({
-        message: `Invalid sick day !!! Please input between ${minSickLeaveDays} - 365`,
+        message: `Invalid sick day !!! Please input between ${MIN_SICK_LEAVE_DAYS} - 365`,
       });
     }
   };
 
+  const clearFilters = () => {
+    setSickDays(0);
+    setEmployerComp(0);
+    setEmployerCompDays(0);
+    setInsuranceComp(0);
+    setInsuranceCompDays(0);
+  };
+
   const handleCalculateComp = () => {
-    if (sickDays > 3 && sickDays <= 365) {
+    try {
+      if (!(sickDays > 3 && sickDays <= 365)) {
+        if (sickDays < MIN_SICK_LEAVE_DAYS) {
+          throw new Error(
+            `Minimum allowed sick leave is ${MIN_SICK_LEAVE_DAYS}`
+          );
+        }
+        clearFilters();
+        return;
+      } else {
+      }
+
+      // Insurance and employer compensation
       if (
-        sickDays > sickLeaveDaysRangeEmployer &&
-        sickDays <= maxSickLeaveDays
+        sickDays > SICK_LEAVE_DAYS_RANGE_EMPLOYER &&
+        sickDays <= MAX_SICK_LEAVE_DAYS
       ) {
-        // insurance and employer compensation
-        const insuranceComp =
-          compRate *
-          (income / daysInMonth) *
-          (sickDays - sickLeaveDaysRangeEmployer);
-        const employerComp = compRate * (income / daysInMonth) * 4;
+        const insuranceComp = calculateCompensationRate(
+          COMP_RATE,
+          income,
+          DAYS_IN_MONTH,
+          sickDays,
+          SICK_LEAVE_DAYS_RANGE_EMPLOYER
+        );
+
+        const employerCompRate = calculateEmployerCompensationRate(
+          COMP_RATE,
+          income,
+          DAYS_IN_MONTH
+        );
         setInsuranceComp(Math.floor(insuranceComp));
-        setEmployerComp(Math.floor(employerComp));
+        setEmployerComp(Math.floor(employerCompRate));
 
-        setIsuranceCompDays(sickDays - sickLeaveDaysRangeEmployer);
-        setEmployerCompDays(minSickLeaveDays);
-      } else if (
-        sickDays >= minSickLeaveDays &&
-        sickDays <= sickLeaveDaysRangeEmployer
+        setInsuranceCompDays(sickDays - SICK_LEAVE_DAYS_RANGE_EMPLOYER);
+        setEmployerCompDays(MIN_SICK_LEAVE_DAYS);
+
+        return;
+      }
+
+      // Employer compensation
+      if (
+        sickDays >= MIN_SICK_LEAVE_DAYS &&
+        sickDays <= SICK_LEAVE_DAYS_RANGE_EMPLOYER
       ) {
-        // Employer compensation
-        const comp =
-          compRate * (income / daysInMonth) * (sickDays - minSickLeaveDays);
+        const employerComp = calculateCompensationRate(
+          COMP_RATE,
+          income,
+          DAYS_IN_MONTH,
+          sickDays,
+          MIN_SICK_LEAVE_DAYS
+        );
 
-        setEmployerComp(Math.floor(comp));
+        setEmployerComp(Math.floor(employerComp));
         setInsuranceComp(0);
         // Subtract days employer doesn't compensate
         setEmployerCompDays(sickDays - 3);
-        setIsuranceCompDays(0);
-      } else if (
-        isTB &&
-        sickDays > sickLeaveDaysRangeEmployer &&
-        sickDays <= maxTBSickLeaveDays
-      ) {
-        // Insurance compensation with TB
-        const insuranceComp =
-          compRate *
-          (income / daysInMonth) *
-          (sickDays - sickLeaveDaysRangeEmployer);
-        const employerComp = compRate * (income / daysInMonth) * 4;
-        setInsuranceComp(Math.floor(insuranceComp));
-        setEmployerComp(Math.floor(employerComp));
+        setInsuranceCompDays(0);
+        return;
+      }
 
-        setIsuranceCompDays(sickDays - sickLeaveDaysRangeEmployer);
-        setEmployerCompDays(minSickLeaveDays);
-      } else {
-        if (isTB && sickDays > sickLeaveDaysRangeEmployer) {
-          notification.error({
-            message: `Maximum allowed sick leave is ${maxTBSickLeaveDays}`,
-          });
-        } else if (sickDays > sickLeaveDaysRangeEmployer) {
-          notification.error({
-            message: `Maximum allowed sick leave is ${maxSickLeaveDays}`,
-          });
-        }
-        setEmployerComp(0);
-        setEmployerCompDays(0);
-        setInsuranceComp(0);
-        setIsuranceCompDays(0);
+      // Insurance compensation with TB
+      if (
+        isTB &&
+        sickDays > SICK_LEAVE_DAYS_RANGE_EMPLOYER &&
+        sickDays <= MAX_TB_SICK_LEAVE_DAYS
+      ) {
+        const insuranceComp = calculateCompensationRate(
+          COMP_RATE,
+          income,
+          DAYS_IN_MONTH,
+          sickDays,
+          SICK_LEAVE_DAYS_RANGE_EMPLOYER
+        );
+
+        const employerCompRate = calculateEmployerCompensationRate(
+          COMP_RATE,
+          income,
+          DAYS_IN_MONTH
+        );
+
+        setInsuranceComp(Math.floor(insuranceComp));
+        setEmployerComp(Math.floor(employerCompRate));
+
+        setInsuranceCompDays(sickDays - SICK_LEAVE_DAYS_RANGE_EMPLOYER);
+        setEmployerCompDays(MIN_SICK_LEAVE_DAYS);
+        return;
       }
-    } else {
-      if (sickDays < minSickLeaveDays) {
-        notification.error({
-          message: `Minimum allowed sick leave is ${minSickLeaveDays}`,
-        });
+
+      if (isTB && sickDays > SICK_LEAVE_DAYS_RANGE_EMPLOYER) {
+        throw new Error(
+          `Maximum allowed sick leave is ${MAX_TB_SICK_LEAVE_DAYS}`
+        );
       }
-      setSickDays(0);
+
+      if (sickDays > SICK_LEAVE_DAYS_RANGE_EMPLOYER) {
+        throw new Error(`Maximum allowed sick leave is ${MAX_SICK_LEAVE_DAYS}`);
+      }
+
       setEmployerComp(0);
       setEmployerCompDays(0);
       setInsuranceComp(0);
-      setIsuranceCompDays(0);
+      setInsuranceCompDays(0);
+    } catch (error: any) {
+      notification.error({ message: `Something went wrong ${error}` });
     }
   };
   return (
-    <div className=" card">
+    <div className="card">
       <div className="flex justify-center">
         <div className="flex flex-col text-black w-11/12 mt-14 gap-1">
           <h1 className="font-bold text-2xl w-40">Compensation Calculator</h1>
@@ -158,7 +199,7 @@ const CompensationCard = () => {
             data-testid="getSickLeave"
           ></Input>
           <Checkbox data-testid="handleHaveTB" onChange={handleHaveTB}>
-            I have tubercolosis
+            I have tuberculosis
           </Checkbox>
           <div>
             <Button
@@ -228,3 +269,21 @@ const CompensationCard = () => {
 };
 
 export default CompensationCard;
+
+const calculateCompensationRate = (
+  compRate: number,
+  income: number,
+  daysInMonth: number,
+  sickDays: number,
+  minSickLeaveDays: number
+) => {
+  return compRate * (income / daysInMonth) * (sickDays - minSickLeaveDays);
+};
+
+const calculateEmployerCompensationRate = (
+  compRate: number,
+  income: number,
+  daysInMonth: number
+) => {
+  return compRate * (income / daysInMonth) * 4;
+};
