@@ -1,5 +1,7 @@
 ## Estonain Employee Health Compenation Calculator
 
+## Demo
+See the app  [the web app](https://hagersew.github.io/compensation-calc/) in action
 ## Available Scripts
 
 In the project directory, you can run:
