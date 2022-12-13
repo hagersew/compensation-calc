@@ -166,7 +166,7 @@ const CompensationCard = () => {
       setInsuranceComp(0);
       setInsuranceCompDays(0);
     } catch (error: any) {
-      alert.error(error);
+      console.log(error);
     }
   };
   return (
