@@ -1,8 +1,8 @@
 import { notification } from 'antd';
 import { CloseIcon, SuccessIcon, WarningIcon } from '../components/icons';
 
-const defaultDuration = 2;
-const customClassName = 'presence-notification';
+const defaultDuration = 4;
+const customClassName = 'notification';
 
 export default class AlertService {
   error = (message: string, title = 'Error', duration?: number) => {
