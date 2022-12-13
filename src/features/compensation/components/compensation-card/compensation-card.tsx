@@ -1,6 +1,6 @@
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import React, { useEffect, useState } from 'react';
-import './styles/card.css';
+import './styles/card.scss';
 import { Button, Divider, notification, Checkbox, Input } from 'antd';
 
 // Maximum number of days insurance compensates

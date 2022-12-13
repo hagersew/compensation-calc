@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ListItem from './components/list-item/list-item';
 import { CompensationCard } from './components/index';
-import './../../styles/style.css';
+import './../../styles/style.scss';
 import image from '../../assets/Image.png';
 
 const Compensation = () => {
