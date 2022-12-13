@@ -1,8 +1,8 @@
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import React, { useEffect, useState } from 'react';
 import './styles/card.css';
-import { Button, Divider, notification, Checkbox, Input } from 'antd';
-
+import { Button, Divider, Checkbox, Input } from 'antd';
+import { alert } from './../../../index';
 // Maximum number of days insurance compensates
 const MAX_TB_SICK_LEAVE_DAYS = 240;
 // Maximum number of days employer compensates
@@ -38,9 +38,7 @@ const CompensationCard = () => {
     if (event.target.value > 0 || event.target.value === '') {
       setIncome(event.target.value);
     } else {
-      notification.error({
-        message: `Invalid Income. Please input 1 and above`,
-      });
+      alert.info('Invalid Income. Please input 1 and above');
     }
   };
   const getSickLeave = (event: any) => {
@@ -50,9 +48,9 @@ const CompensationCard = () => {
     ) {
       setSickDays(event.target.value);
     } else {
-      notification.error({
-        message: `Invalid sick day !!! Please input between ${MIN_SICK_LEAVE_DAYS} - 365`,
-      });
+      alert.info(
+        `Invalid sick day !!! Please input between ${MIN_SICK_LEAVE_DAYS} - 365`
+      );
     }
   };
 
@@ -168,7 +166,7 @@ const CompensationCard = () => {
       setInsuranceComp(0);
       setInsuranceCompDays(0);
     } catch (error: any) {
-      notification.error({ message: error });
+      alert.error(error);
     }
   };
   return (
