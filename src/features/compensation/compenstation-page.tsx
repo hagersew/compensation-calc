@@ -6,7 +6,7 @@ import image from '../../assets/Image.png';
 
 const Compensation = () => {
   return (
-    <div className="flex justify-center redberry h-fit">
+    <div className="flex justify-center redberry h-screen">
       <div className="flex flex-row w-10/12 my-12">
         <div className="lg:flex gap-40">
           <div className="text-white">
