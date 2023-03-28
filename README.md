@@ -1,5 +1,9 @@
 ## Estonain Employee Health Compenation Calculator
 
+The Estonian Employee Health Compensation Calculator is a tool that allows you to calculate the amount of compensation that an employee is eligible for in the event of a work-related injury or illness. The calculator takes into account the employee's salary, the severity of the injury or illness, and the number of days that the employee is unable to work.
+
+The calculator is a valuable tool for employers who want to ensure that their employees are properly compensated in the event of a work-related injury or illness. It can also be used by employees to estimate the amount of compensation that they may be eligible for.
+
 ## Demo
 See the app  [the web app](https://hagersew.github.io/compensation-calc/) in action
 ## Available Scripts
